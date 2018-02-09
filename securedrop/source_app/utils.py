@@ -61,6 +61,9 @@ def get_entropy_estimate():
 
 
 def async(f):
+    # import os
+    # if os.environ.get('SECUREDROP_ENV', None) == 'test':
+    #     return f
     def wrapper(*args, **kwargs):
         thread = Thread(target=f, args=args, kwargs=kwargs)
         thread.start()
@@ -75,8 +78,8 @@ def async_genkey(filesystem_id, codename):
     # filter to the top of the list in the journalist interface if a
     # flagged source logs in and has a key generated for them. #789
     try:
-        source = Source.query.filter(Source.filesystem_id == filesystem_id) \
-                       .one()
+        source = Source(db.scoped_session).query.filter(
+            Source.filesystem_id == filesystem_id).one()
         source.last_updated = datetime.utcnow()
         db.session.commit()
     except Exception as e:

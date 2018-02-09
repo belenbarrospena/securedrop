@@ -1,7 +1,14 @@
 #!/bin/bash
+# shellcheck disable=SC1090
+
 set -euo pipefail
-# shellcheck source=./dev-deps
-. "${BASH_SOURCE%/*}/dev-deps"
+
+source "${BASH_SOURCE%/*}/dev-deps"
+
+run_xvfb &
+run_redis &
+urandom
+maybe_create_config_py
 
 if [ -n "${CIRCLE_BRANCH:-}" ] ; then
     touch tests/log/firefox.log
