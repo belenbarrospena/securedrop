@@ -512,7 +512,8 @@ class TestIntegration(unittest.TestCase):
             ), follow_redirects=True)
             self.assertEqual(resp.status_code, 200)
             self.assertIn("%s collections deleted" % (num_sources,), resp.data)
-            self.assertTrue(async_genkey.called)
+            utils.async.wait_for_assertion(
+                lambda: self.assertTrue(async_genkey.called), timeout=60)
 
             # Make sure the collections are deleted from the filesystem
             utils.async.wait_for_assertion(lambda: self.assertFalse(
